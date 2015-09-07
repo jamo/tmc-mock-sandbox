@@ -50,10 +50,8 @@ class App < Sinatra::Base
   end
 
   post '/tasks.json' do
-    p PARAMS: params
     json = {}
     hash = get_hash_for_tar(request, params)
-    p HASH: hash
     elem = nil
     $store.transaction do
       elem = $store[hash]
@@ -62,11 +60,10 @@ class App < Sinatra::Base
     if elem && !ENV['FORCE_UPDATE']
       json = JSON.parse(elem)
       body_json = json.merge({'token' => params['token']})
-      puts "Notifying tmc-server at #{params['notify']}"
-      puts "Sending tasks to real sandbox soon"
+      puts "Notifying tmc-server at #{params['notify']} soon"
       Thread.new do
         sleep 2
-        puts "Sending tasks to real sandbox now"
+        puts "Notifying now now"
         puts HTTMultiParty.post(params['notify'], body: body_json)
       end
     elsif ENV['REAL_SANDBOX_ADDRESS']
